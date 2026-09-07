@@ -1,0 +1,25 @@
+# PlatformIO
+.pio/
+
+# ROS 2 / colcon
+build/
+install/
+log/
+
+# Python
+__pycache__/
+*.pyc
+
+# VS Code
+.vscode/
+
+# Betriebssystem-Kram
+.DS_Store
+Thumbs.db
+
+# Kompilierte Socket-Programme
+programming_tasks/socket/client
+programming_tasks/socket/peer
+programming_tasks/socket/peer_list
+programming_tasks/socket/server
+programming_tasks/socket/server_list

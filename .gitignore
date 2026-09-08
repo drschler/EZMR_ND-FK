@@ -23,3 +23,7 @@ programming_tasks/socket/peer
 programming_tasks/socket/peer_list
 programming_tasks/socket/server
 programming_tasks/socket/server_list
+
+# Windows Zone Identifier
+*:Zone.Identifier
+*.Zone.Identifier

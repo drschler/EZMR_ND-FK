@@ -1,11 +1,14 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -O2
-TARGETS = server_prozess
+TARGETS = server client
 
 all: $(TARGETS)
 
-server_prozess: server_prozess.c
-	$(CC) $(CFLAGS) -o server_prozess server_prozess.c
+server: server.c
+	$(CC) $(CFLAGS) -o server server.c
+
+client: client.c
+	$(CC) $(CFLAGS) -o client client.c
 
 clean:
 	rm -f $(TARGETS)

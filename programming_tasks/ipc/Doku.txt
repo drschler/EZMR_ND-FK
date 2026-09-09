@@ -93,7 +93,9 @@ int main()
     return 0;
 }
 
-Client#include <stdio.h>
+Client
+
+#include <stdio.h>
 #include <stdlib.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
@@ -155,6 +157,24 @@ erstellen mit typedef das pdu_t -> Datentyp somit kann man jetzt die Sachen schr
 shared_memory->status = 0; (also auf die einzelnen Bestandteile zugreifen)
     da es ein Zeiger ist hier "->" statt "."
 
+        typedef struct
+        {
+            volatile int status;
+            //ohne volatile weiß der compiler nicht unbedingt, dass ein anderer Prozess den Speicher geändert hat und kommt nicht aus dem Busy-Wait
+            //jetzt wird er bei jeder Prüfung neu aus dem Speicher gelesen
+            int type;
+            char data[256];
+        } pdu_t;
+
+┌────────────────────────────────────┐
+│             PDU                    │
+├──────────┬─────────────────────────┤
+│ status   │ Wo sind wir im Ablauf?  │ Zustand der Kommunikation (0 - Ausgang, 1 - Anfrage des Clients liegt bereit/Server ist dran, 2 - Antwort des Servers ist bereit/Client ist dran)
+│ type     │ Was soll getan werden?  │ 
+│ data     │ Welche Daten gehören    │
+│          │ zur Anfrage/Antwort?    │
+└──────────┴─────────────────────────┘
+
 somit: 
 
 typedef struct {...} pdu_t;
@@ -180,3 +200,30 @@ shared_memory->status = 0;
 
 
 Client bekommt auch den pdu-Datentyp MUSS GELICH SEIN -> protocol.h (gemeinsame headerdatei)
+
+Teil b -> quasi mit drinne alles
+
+Teil c -> Liste
+
+1. einfache Liste hinzufügen (ändern des Datentypes im Header)
+    -> PDU und Speicher voneinander trennen
+
+Liste funktioniert, aber es kann zu fehlerhaften lesen des PDUs (Race-Condition) kommen, wenn mehrere Clients gleichzeitig drauf zugreifen
+volatile hilft da nicht -> SEMAPHOREN zur Regelung der Zugriffe
+
+    Semaphore LOCK
+
+    type/data schreiben
+    status = 1
+
+    auf status = 2 warten
+
+    Antwort lesen
+    status = 0
+
+    Semaphore UNLOCK
+Dadurch kann immer nur ein Client zur Zeit die eine gemeinsame PDU benutzen
+
+Eingabeteil im Client mit zwischenpuffer ausgestattet und somit nur einen kurzen "kritischen" Teil, in dem der Memory bespielt wird -> der wird gesichert durch die Semaphore
+Zum Test Verzögerungszeit im Server eingebaut
+

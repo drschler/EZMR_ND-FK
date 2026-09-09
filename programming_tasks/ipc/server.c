@@ -51,11 +51,10 @@ int main()
 
     while (running)
     {
-        // Busy Waiting:
-        // Warten, bis der Client eine Anfrage geschrieben hat
         while (shared_memory->status != 1)
         {
-            // absichtlich leer
+            // Busy Waiting:
+            // Warten, bis der Client eine Anfrage geschrieben hat
         }
 
         printf("Anfrage empfangen.\n");

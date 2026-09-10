@@ -227,3 +227,12 @@ Dadurch kann immer nur ein Client zur Zeit die eine gemeinsame PDU benutzen
 Eingabeteil im Client mit zwischenpuffer ausgestattet und somit nur einen kurzen "kritischen" Teil, in dem der Memory bespielt wird -> der wird gesichert durch die Semaphore
 Zum Test Verzögerungszeit im Server eingebaut
 
+Man muss den server richtig schließen (über den client, damit auch der shared memory richtig aufgeräumt wird -> kann sonst dazu führen, dass man beim nächsten starten probleme hat)
+
+Teil d -> gleichberechtigte Kommunikation
+
+messages - zeigt die gleichberechtigte Kommunikation zwischen Peers
+list - zeigt die gemeinsame Datenstruktur, auf die alle zugreifen und die alle verändern können
+Semaphore schützt beide gemeinsamen Bereiche
+
+Beenden mit letzter räumt alle ressourcen auf noch safen mit Semaphoren

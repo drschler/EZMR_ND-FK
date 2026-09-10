@@ -92,7 +92,7 @@ int main()
 
         printf("Anfrage empfangen.\n");
 
-        sleep(5); //EXTRAVERZÖGERUNG zum Test der Semaphore
+        //sleep(5); //EXTRAVERZÖGERUNG zum Test der Semaphore
 
         // Anfrage auswerten
         switch (shared_memory->pdu.type)

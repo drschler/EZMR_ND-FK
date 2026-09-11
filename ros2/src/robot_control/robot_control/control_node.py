@@ -1,5 +1,8 @@
 import rclpy
-import threading #für nonblocking
+import threading #für nonblocking -> damit die Dinger gleichzeitig laufen
+import sys
+import termios
+import tty
 
 from rclpy.node import Node
 from std_msgs.msg import Bool
@@ -8,6 +11,18 @@ from sensor_msgs.msg import Imu
 
 from robot_interfaces.msg import MovementCommand
 
+def get_key():
+    fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(fd)
+
+    try:
+        tty.setraw(fd)
+        key = sys.stdin.read(1)
+
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+
+    return key
 
 class ControlNode(Node):
 
@@ -120,6 +135,7 @@ def main(args=None):
 
             print()
             print("Verfuegbare Befehle:")
+            print("  wasd")
             print("  forward <Wert>")
             print("  backward <Wert>")
             print("  circle right <Wert>")
@@ -190,6 +206,34 @@ def main(args=None):
         elif user_input == "imu on":
             node.show_imu_continuously = True
             print("Fortlaufende IMU-Datenausgabe aktiviert.")
+
+        elif user_input == "wasd":
+            print("Steuerung durch Tastendruck aktiviert:")
+            print("w = vorwärts")
+            print("s = rückwärts")
+            print("a = links")
+            print("d = rechts")
+            print("q = beenden")
+
+            while rclpy.ok():
+
+                key = get_key()
+
+                if key == "w":
+                    node.publish_movement("forward", 5)
+
+                elif key == "s":
+                    node.publish_movement("backward", 5)
+
+                elif key == "a":
+                    node.publish_movement("circle_left", 5)
+
+                elif key == "d":
+                    node.publish_movement("circle_right", 5)
+
+                elif key == "q":
+                    print("\nWASD-Steuerung beendet.")
+                    break
 
         else:
 

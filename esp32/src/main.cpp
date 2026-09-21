@@ -136,31 +136,52 @@ float measure_distance()
 
 float measure_distance_cm()
 {
-    unsigned long duration = measure_distance();
+    float distance = 0.0f;
 
-    // Timeout -> keine gültige Messung FEHLERHANDLING
-    if (duration == 0)
+    do
     {
-        display.clearDisplay();
-        display.setTextSize(1);
-        display.setCursor(0, 0);
-        display.println("ALARM - Fehler bei der Abstandsmessung!");
-        display.println("Der hat einen Wackler -> mal abchecken.");
-        display.println("Geht erst weiter, wenn der Sensor wieder korrekt misst.");
-        display.display();
+        unsigned long duration = measure_distance();
 
-        while (duration == 0)
+        // Timeout -> keine gültige Messung
+        if (duration == 0)
         {
-          duration = measure_distance();
-          delay(100);
+            display.clearDisplay();
+            display.setTextSize(1);
+            display.setCursor(0, 0);
+            display.println("ALARM - Fehler bei der Abstandsmessung!");
+            display.println("Der hat einen Wackler -> mal abchecken.");
+            display.println("Geht erst weiter, wenn der Sensor wieder korrekt misst.");
+            display.display();
+
+            delay(100);
+            continue;
         }
-    }
+
+        // Entfernung in cm umrechnen
+        // Entfernung = Laufzeit × Schallgeschwindigkeit / 2
+        distance = duration * 0.0343f / 2.0f;
+
+        // Unplausible Messwerte verwerfen
+        if (distance < 2.0f || distance > 500.0f)
+        {
+            display.clearDisplay();
+            display.setTextSize(1);
+            display.setCursor(0, 0);
+            display.println("ALARM - Unplausibler Abstand!");
+            display.print("Messwert: ");
+            display.print(distance, 1);
+            display.println(" cm");
+            display.println("Messung wird wiederholt.");
+            display.display();
+
+            distance = 0.0f;
+            delay(100);
+        }
+
+    } while (distance == 0.0f);
+
+    // wenn eine gültige Messung vorliegt
     display.clearDisplay();
-
-    // Entfernung in cm umrechnen
-    // Entfernung = Laufzeit × Schallgeschwindigkeit / 2
-    float distance = duration * 0.0343f / 2.0f;
-
     show_distance_oled(distance);
 
     return distance;

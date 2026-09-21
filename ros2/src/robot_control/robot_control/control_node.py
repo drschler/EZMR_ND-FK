@@ -223,13 +223,13 @@ def main(args=None):
                     node.publish_movement("forward", 5)
 
                 elif key == "s":
-                    node.publish_movement("backward", 5)
+                    node.publish_movement("backward", 2)
 
                 elif key == "a":
-                    node.publish_movement("circle_left", 5)
+                    node.publish_movement("circle_left", 4)
 
                 elif key == "d":
-                    node.publish_movement("circle_right", 5)
+                    node.publish_movement("circle_right", 4)
 
                 elif key == "q":
                     print("\nWASD-Steuerung beendet.")

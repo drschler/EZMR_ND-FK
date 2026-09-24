@@ -54,6 +54,8 @@ class ControlNode(Node):
             10
         )
 
+        self.forward_allowed = True
+
         self.show_distance_continuously = False
         self.show_imu_continuously = False
 
@@ -61,6 +63,13 @@ class ControlNode(Node):
 
 
     def publish_movement(self, command, value):
+
+        # Vorwärtsfahrt nur erlauben, wenn kein Hindernis erkannt wurde
+        if command == "forward" and not self.forward_allowed:
+            self.get_logger().warn(
+                "Vorwaertsfahrt nicht moeglich - Hindernis erkannt!"
+            )
+            return
 
         msg = MovementCommand()
 
@@ -85,9 +94,15 @@ class ControlNode(Node):
         )
     
     def distance_callback(self, msg):
+        distance = msg.data
 
-        if self.show_distance_continuously:
-            print(f"Abstand: {msg.data:.1f} cm")
+        if distance < 7.0:
+            self.forward_allowed = False
+            # self.get_logger().warn(
+            #     f'Hindernis erkannt ({distance:.1f} cm) - Vorwaertsfahrt gesperrt!'
+            # )
+        else:
+            self.forward_allowed = True
 
     def imu_callback(self, msg):
 
@@ -135,7 +150,7 @@ def main(args=None):
 
             print()
             print("Verfuegbare Befehle:")
-            print("  wasd")
+            print("  remote")
             print("  forward <Wert>")
             print("  backward <Wert>")
             print("  circle right <Wert>")
@@ -207,7 +222,7 @@ def main(args=None):
             node.show_imu_continuously = True
             print("Fortlaufende IMU-Datenausgabe aktiviert.")
 
-        elif user_input == "wasd":
+        elif user_input == "remote":
             print("Steuerung durch Tastendruck aktiviert:")
             print("w = vorwärts")
             print("s = rückwärts")

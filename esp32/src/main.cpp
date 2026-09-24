@@ -162,7 +162,7 @@ float measure_distance_cm()
         distance = duration * 0.0343f / 2.0f;
 
         // Unplausible Messwerte verwerfen
-        if (distance < 2.0f || distance > 500.0f)
+        if (distance < 2.0f) //|| distance > 2000.0f
         {
             display.clearDisplay();
             display.setTextSize(1);
@@ -251,7 +251,7 @@ void drive_forward(const uint16_t value)
 void drive_forward_safe(uint16_t total_steps)
 {
     const uint16_t chunk_size = 5;
-    const float ms_per_step = 780.0f;   // erstmal experimentell bestimmen
+    const float ms_per_step = 780.0f;   // erstmal experimentell bestimmen, wie lange ein Schritt dauert um abzuschätzen, wann man nächsten Motorbefehl senden kann
     const float cm_per_step = 3.0f;
     const float target_distance = 7.0f;
 
@@ -478,10 +478,13 @@ void setup()
   // set_microros_serial_transports(Serial);
 
   // für Wifi Bespielung
-  IPAddress agent_ip(192, 168, 188, 111);
+//   IPAddress agent_ip(192, 168, 188, 111); //Adresse des Micro-ROS-Agenten im lokalen Netzwerk
+  IPAddress agent_ip(172, 20, 10, 2);
 
-  char ssid[] = "FRITZ!Box 3272";
-  char psk[]  = "45647999863570256502";
+//   char ssid[] = "FRITZ!Box 3272";
+//   char psk[]  = "45647999863570256502";
+  char ssid[] = "iPhone von Nick";
+  char psk[]  = "12345678";
 
   set_microros_wifi_transports(
       ssid,

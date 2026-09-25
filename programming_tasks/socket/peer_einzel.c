@@ -229,12 +229,6 @@ int main(int arg_counter, char *arg_vektor[])
 	return 0;
 }
 
-
-
-
-
-
-
 int create_listen_socket(int port)
 {
 	int listen_socket;

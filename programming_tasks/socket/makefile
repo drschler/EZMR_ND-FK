@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -O2
-TARGETS = server server_list client peer peer_list
+TARGETS = server server_list client client_list peer peer_einzel peer_list
 
 all: $(TARGETS)
 
@@ -12,6 +12,12 @@ server_list: server_list.c
 
 client: client.c
 	$(CC) $(CFLAGS) -o client client.c
+
+client_list: client_list.c
+	$(CC) $(CFLAGS) -o client_list client_list.c
+
+peer_einzel: peer_einzel.c
+	$(CC) $(CFLAGS) -o peer_einzel peer_einzel.c
 
 peer: peer.c
 	$(CC) $(CFLAGS) -o peer peer.c

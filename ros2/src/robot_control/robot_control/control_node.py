@@ -96,6 +96,9 @@ class ControlNode(Node):
     def distance_callback(self, msg):
         distance = msg.data
 
+        if self.show_distance_continuously:
+                print(f"Abstand: {distance:.1f} cm")
+
         if distance < 7.0:
             self.forward_allowed = False
             # self.get_logger().warn(
@@ -247,7 +250,7 @@ def main(args=None):
                     node.publish_movement("circle_right", 4)
 
                 elif key == "q":
-                    print("\nWASD-Steuerung beendet.")
+                    print("\nRemote-Steuerung beendet.")
                     break
 
         else:

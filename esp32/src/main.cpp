@@ -15,6 +15,7 @@
 #include <Adafruit_SSD1306.h>
 
 #include <sensor_msgs/msg/imu.h>
+#include <geometry_msgs/msg/twist.h>
 
 //Paketnummern, die wir selber erstellt haben 
 #include <robot_interfaces/msg/movement_command.h>
@@ -53,6 +54,9 @@ robot_interfaces__msg__MotorCommand motor_msg;
 
 rcl_subscription_t movement_subscriber;
 robot_interfaces__msg__MovementCommand movement_msg;
+
+rcl_subscription_t cmd_vel_subscriber;
+geometry_msgs__msg__Twist cmd_vel_msg;
 
 rcl_publisher_t distance_publisher;
 std_msgs__msg__Float32 distance_msg;
@@ -441,6 +445,29 @@ void movement_callback(const void * msgin)
     }
 }
 
+void cmd_vel_callback(const void * msgin)
+{
+    const geometry_msgs__msg__Twist * msg =
+        (const geometry_msgs__msg__Twist *)msgin;
+
+    if (msg->linear.x > 0.0)
+    {
+        drive_forward_safe(5);
+    }
+    else if (msg->linear.x < 0.0)
+    {
+        drive_backward(5);
+    }
+    else if (msg->angular.z > 0.0)
+    {
+        drive_circle_left(5);
+    }
+    else if (msg->angular.z < 0.0)
+    {
+        drive_circle_right(5);
+    }
+}
+
 void setup()
 {
   Serial.begin(115200);
@@ -547,12 +574,19 @@ RCCHECK(rclc_subscription_init_default(
     "movement_cmd")
   );
 
+RCCHECK(rclc_subscription_init_default(
+    &cmd_vel_subscriber,
+    &node,
+    ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Twist),
+    "cmd_vel")
+  );
+
   // Create executor
   RCCHECK(
     rclc_executor_init(
       &executor,
       &support.context,
-      3, // number of subscriptions
+      4, // number of subscriptions
       &allocator
     )
   );
@@ -587,6 +621,17 @@ RCCHECK(rclc_subscription_init_default(
       ON_NEW_DATA
     )
   );
+
+// Add cmd_vel subscription to executor
+RCCHECK(
+    rclc_executor_add_subscription(
+        &executor,
+        &cmd_vel_subscriber,
+        &cmd_vel_msg,
+        &cmd_vel_callback,
+        ON_NEW_DATA
+    )
+);
 
   // Create publisher
   RCCHECK(

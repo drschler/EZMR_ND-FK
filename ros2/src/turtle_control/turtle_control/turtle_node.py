@@ -98,6 +98,7 @@ def main(args=None):
     print("a = links")
     print("d = rechts")
     print("x = stoppen")
+    print("f = automatisch Viereck fahren")
     print("q = beenden")
 
     while rclpy.ok():
@@ -118,6 +119,9 @@ def main(args=None):
 
         elif key == "x":
             node.move(0.0, 0.0)
+        
+        elif key == "f":
+            node.drive_square()
 
         elif key == "q":
             node.move(0.0, 0.0)

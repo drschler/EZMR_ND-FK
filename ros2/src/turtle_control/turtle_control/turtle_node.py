@@ -98,7 +98,7 @@ def main(args=None):
     print("a = links")
     print("d = rechts")
     print("x = stoppen")
-    print("f = automatisch Viereck fahren")
+    print("f = automatisches sViereck fahren")
     print("q = beenden")
 
     while rclpy.ok():

@@ -255,7 +255,7 @@ void drive_forward(const uint16_t value)
 void drive_forward_safe(uint16_t total_steps)
 {
     const uint16_t chunk_size = 5;
-    const float ms_per_step = 780.0f;   // erstmal experimentell bestimmen, wie lange ein Schritt dauert um abzuschätzen, wann man nächsten Motorbefehl senden kann
+    const float ms_per_step = 780.0f;   // experimentell bestimmt
     const float cm_per_step = 3.0f;
     const float target_distance = 7.0f;
 
@@ -267,7 +267,7 @@ void drive_forward_safe(uint16_t total_steps)
     {
         float distance = measure_distance_cm();
 
-        // Reicht der Platz nicht mehr für einen kompletten Chunk?
+        // Kontrolle des Abstands für einen Chunk
         if (distance > 0 &&
             distance < (cm_per_step * chunk_size + target_distance))
         {
@@ -289,7 +289,7 @@ void drive_forward_safe(uint16_t total_steps)
         }
 
         uint16_t remaining = total_steps - driven_steps;
-        uint16_t next_chunk = (remaining < chunk_size) ? remaining : chunk_size; //verrückte IF-Nummer in einer Zeile
+        uint16_t next_chunk = (remaining < chunk_size) ? remaining : chunk_size;
 
         drive_forward(next_chunk);
 

@@ -2,7 +2,7 @@
 
 Projekt im Rahmen des Moduls **Echtzeitsysteme und mobile Robotik** an der HTWK Leipzig.
 
-Das Repository enthält die im Rahmen des Projekts erstellten Programme zur Steuerung eines mobilen Roboters mit **ROS 2 Jazzy** sowie die zugehörigen Programmieraufgaben.
+Das Repository enthält die erstellten Programme zur Steuerung eines mobilen Roboters mit **ROS 2 Jazzy** sowie die zugehörigen Programmieraufgaben.
 
 ## Struktur
 
